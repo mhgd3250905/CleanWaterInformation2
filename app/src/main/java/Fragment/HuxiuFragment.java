@@ -146,6 +146,7 @@ public class HuxiuFragment extends Fragment {
                 Intent itemIntent=new Intent();
                 itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
+                itemIntent.putExtra("content",mDataList.get(position).getContentHtml());
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }

@@ -27,15 +27,15 @@
                 />
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+
             <WebView
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
                 android:id="@id/wv_web"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="#FFFFFF"/>
-        </android.support.v4.widget.NestedScrollView>
+
 
     </LinearLayout>
 
