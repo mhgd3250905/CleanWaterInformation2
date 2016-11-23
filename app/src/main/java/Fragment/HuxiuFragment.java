@@ -96,6 +96,7 @@ public class HuxiuFragment extends Fragment {
         query.setSkip(page*20);
         //返回50条数据，如果不加上这条语句，默认返回10条数据
         query.setLimit(20);
+        query.order("-createdAt");
         //执行查询方法
         query.findObjects(new FindListener<HuXiuBean>() {
             @Override
