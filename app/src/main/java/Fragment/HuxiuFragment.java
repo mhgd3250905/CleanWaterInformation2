@@ -128,8 +128,7 @@ public class HuxiuFragment extends Fragment {
         rvHuxiu.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
-                Toast.makeText(getContext(), "下拉刷新", Toast.LENGTH_SHORT).show();
-                rvHuxiu.setPullLoadMoreCompleted();
+                initData();
             }
 
             @Override
@@ -137,7 +136,6 @@ public class HuxiuFragment extends Fragment {
                 Toast.makeText(getContext(), "上拉加载更多", Toast.LENGTH_SHORT).show();
                 page++;
                 initData();
-
             }
         });
 
@@ -147,7 +145,6 @@ public class HuxiuFragment extends Fragment {
                 Intent itemIntent=new Intent();
                 itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
-                itemIntent.putExtra("content",mDataList.get(position).getContentHtml());
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }

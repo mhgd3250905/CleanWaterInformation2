@@ -18,6 +18,7 @@
     <color name="colorBlackBody77">#66000000</color>
     <color name="colorRed">#bbff2244</color>
     <color name="colorWhite">#fff</color>
+    <color name="colorWhiteAA">#afff</color>
     <color name="colorWhite55">#55ffffff</color>
     <color name="colorGray">#44000000</color>
     <color name="colorTransPrimaryDark">#552B6582</color>
