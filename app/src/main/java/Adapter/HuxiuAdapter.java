@@ -41,6 +41,7 @@ public class HuxiuAdapter extends RecyclerViewBaseAdapter<HuXiuBean>{
         holder.tvItem.setText(mItemDataList.get(i).getTitle());
         Glide.with(context)
                 .load(mItemDataList.get(i).getImgSrc())
+
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(holder.ivItem);
     }

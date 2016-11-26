@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.List;
 import Adapter.HuxiuAdapter;
 import Adapter.RecyclerViewBaseAdapter;
 import DataBean.HuXiuBean;
+import DataBean.HuxiuGson;
+import DataBean.JsonHuxiu;
 import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -91,22 +94,27 @@ public class HuxiuFragment extends Fragment {
     * @返回值
     */
     private void initData() {
-        BmobQuery<HuXiuBean> query = new BmobQuery<HuXiuBean>();
+        BmobQuery<JsonHuxiu> query = new BmobQuery<JsonHuxiu>();
         //查询playerName叫“比目”的数据
-        query.setSkip(page*20);
+        query.setSkip(page*1);
         //返回50条数据，如果不加上这条语句，默认返回10条数据
-        query.setLimit(20);
-        query.order("-createdAt");
+        query.setLimit(1);
+        query.order("-num");
         //执行查询方法
-        query.findObjects(new FindListener<HuXiuBean>() {
+        query.findObjects(new FindListener<JsonHuxiu>() {
             @Override
-            public void done(List<HuXiuBean> object, BmobException e) {
+            public void done(List<JsonHuxiu> object, BmobException e) {
                 if(e==null){
-                    LogUtils.Log("查询成功：共"+object.size()+"条数据。");
-                    for (int i = 0; i < object.size(); i++) {
-                        mDataList.add(object.get(i));
+                    HuxiuGson huxiuGson = new Gson().fromJson(object.get(0).getJsonData(), HuxiuGson.class);
+                    List<HuXiuBean> data = huxiuGson.getData();
+
+                    LogUtils.Log("查询成功：共"+data.size()+"条数据。");
+
+                    for (int i = 0; i < data.size(); i++) {
+                        mDataList.add(data.get(i));
                     }
-                    adapter.append(object);
+
+                    adapter.append(data);
                     if (rvHuxiu.isLoadMore()) {
                         rvHuxiu.setPullLoadMoreCompleted();
                     }
