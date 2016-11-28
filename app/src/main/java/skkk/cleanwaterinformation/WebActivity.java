@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import java.util.List;
 
 import DataBean.HuXiuContentBean;
+import DataBean.ITHomeContentBean;
 import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +32,7 @@ public class WebActivity extends AppCompatActivity {
     private String url=null;
     private String title=null;
     private String content=null;
+    private int type;
 
 
     @Override
@@ -39,71 +41,64 @@ public class WebActivity extends AppCompatActivity {
         Intent intent = getIntent();
         url=intent.getStringExtra("url");
         title=intent.getStringExtra("title");
+        type=intent.getIntExtra("type",0);
         initUI();
         initData();
     }
 
     private void initData() {
-        getContentHtml(url);
-//        Observable observable = Observable.create(new Observable.OnSubscribe<String>() {
-//            @Override
-//            public void call(Subscriber<? super String> subscriber) {
-//                subscriber.onNext(url);
-//                subscriber.onCompleted();
-//            }
-//        });
-//
-//        Subscriber<String> subscriber=new Subscriber<String>() {
-//            @Override
-//            public void onCompleted() {
-//                LogUtils.Log("完成");
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(String s) {
-//                LogUtils.Log(s);
-//                mWvWeb.loadDataWithBaseURL(null,s, "text/html", "utf-8", null);
-//            }
-//        };
-
-//        observable
-//                .map(new Func1<String, String>() {
-//                    @Override
-//                    public String call(String s) {
-//                        return getContentHtml(s);
-//                    }
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(subscriber);
+        getContentHtml(url,type);
     }
 
 
-    public void getContentHtml(String key){
-        BmobQuery<HuXiuContentBean> query = new BmobQuery<HuXiuContentBean>();
-        query.addWhereEqualTo("key",key)
-                .findObjects(new FindListener<HuXiuContentBean>() {
-                    @Override
-                    public void done(List<HuXiuContentBean> object, BmobException e) {
-                        if (e == null&&object.size()==1) {
-                            LogUtils.Log("查询到的内容"+object.get(0).getContent());
-                            content = object.get(0).getContent();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+    public void getContentHtml(String key,int type){
+        switch (type){
+            case 0:
+                LogUtils.Log("获取type：   "+type);
+                BmobQuery<HuXiuContentBean> huxiuQuery = new BmobQuery<HuXiuContentBean>();
+                huxiuQuery.addWhereEqualTo("key",key)
+                        .findObjects(new FindListener<HuXiuContentBean>() {
+                            @Override
+                            public void done(List<HuXiuContentBean> object, BmobException e) {
+                                if (e == null&&object.size()==1) {
+                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+                                    content = object.get(0).getContent();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+                                        }
+                                    });
+                                } else {
+                                    LogUtils.Log("查询内容失败");
                                 }
-                            });
-                        } else {
-                            LogUtils.Log("查询内容失败");
-                        }
-                    }
-                });
+                            }
+                        });
+                break;
+            case 1:
+                LogUtils.Log("获取type：   "+type);
+                BmobQuery<ITHomeContentBean> itHomeQuery = new BmobQuery<ITHomeContentBean>();
+                itHomeQuery.addWhereEqualTo("key",key)
+                        .findObjects(new FindListener<ITHomeContentBean>() {
+                            @Override
+                            public void done(List<ITHomeContentBean> object, BmobException e) {
+                                if (e == null&&object.size()==1) {
+                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+                                    content = object.get(0).getContent();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+                                        }
+                                    });
+                                } else {
+                                    LogUtils.Log("查询内容失败");
+                                }
+                            }
+                        });
+                break;
+        }
+
         LogUtils.Log("返回的内容"+content);
     }
 

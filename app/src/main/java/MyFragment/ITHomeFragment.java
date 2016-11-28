@@ -1,4 +1,4 @@
-package Fragment;
+package MyFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,11 +17,11 @@ import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import Adapter.HuxiuAdapter;
+import Adapter.ITHomeAdapter;
 import Adapter.RecyclerViewBaseAdapter;
-import DataBean.HuXiuBean;
-import DataBean.HuxiuGson;
-import DataBean.JsonHuxiu;
+import DataBean.ITHomeBean;
+import DataBean.ITHomeGson;
+import DataBean.JsonITHome;
 import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -33,21 +33,21 @@ import skkk.cleanwaterinformation.R;
 import skkk.cleanwaterinformation.WebActivity;
 
 /**
- * Created by admin on 2016/11/21.
+ * Created by admin on 2016/11/28.
  */
 /*
-* 
-* 描    述：展示虎嗅网的Fragment
+*
+* 描    述：
 * 作    者：ksheng
-* 时    间：2016/11/21$ 21:16$.
+* 时    间：2016/11/28$ 22:16$.
 */
-public class HuxiuFragment extends Fragment {
+public class ITHomeFragment extends Fragment{
     @Bind(R.id.rv_huxiu)
     PullLoadMoreRecyclerView rvHuxiu;
 
     private int page=0;
-    private List<HuXiuBean> mDataList=new ArrayList<HuXiuBean>();
-    private HuxiuAdapter adapter;
+    private List<ITHomeBean> mDataList=new ArrayList<ITHomeBean>();
+    private ITHomeAdapter adapter;
 
 
 
@@ -55,16 +55,16 @@ public class HuxiuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bmob.initialize(getContext(), "9e16e39fa5374f446e5c928da0f83d62");
-        View huxiuView=inflater.inflate(R.layout.fragment_huxiu,container,false);
-        ButterKnife.bind(this,huxiuView);
+        View itHomeView=inflater.inflate(R.layout.fragment_huxiu,container,false);
+        ButterKnife.bind(this,itHomeView);
         initUI();
         initData();
         initEvent();
 
-        return huxiuView;
+        return itHomeView;
     }
 
-    
+
 
     /*
     ***************************************************
@@ -74,7 +74,7 @@ public class HuxiuFragment extends Fragment {
     */
     private void initUI() {
         /* @描述 设置Adapter */
-        adapter = new HuxiuAdapter(getContext(),mDataList);
+        adapter = new ITHomeAdapter(getContext(),mDataList);
         /* @描述 布局 */
         rvHuxiu.setLinearLayout();
         /* @描述 设置间距 */
@@ -94,19 +94,20 @@ public class HuxiuFragment extends Fragment {
     * @返回值
     */
     private void initData() {
-        BmobQuery<JsonHuxiu> query = new BmobQuery<JsonHuxiu>();
+
+        BmobQuery<JsonITHome> query = new BmobQuery<JsonITHome>();
         //查询playerName叫“比目”的数据
         query.setSkip(page*1);
         //返回50条数据，如果不加上这条语句，默认返回10条数据
         query.setLimit(1);
         query.order("-num");
         //执行查询方法
-        query.findObjects(new FindListener<JsonHuxiu>() {
+        query.findObjects(new FindListener<JsonITHome>() {
             @Override
-            public void done(List<JsonHuxiu> object, BmobException e) {
+            public void done(List<JsonITHome> object, BmobException e) {
                 if(e==null){
-                    HuxiuGson huxiuGson = new Gson().fromJson(object.get(0).getJsonData(), HuxiuGson.class);
-                    List<HuXiuBean> data = huxiuGson.getData();
+                    ITHomeGson itHomeGson = new Gson().fromJson(object.get(0).getJsonData(), ITHomeGson.class);
+                    List<ITHomeBean> data = itHomeGson.getData();
 
                     LogUtils.Log("查询成功：共"+data.size()+"条数据。");
 
@@ -125,7 +126,7 @@ public class HuxiuFragment extends Fragment {
         });
     }
 
-    
+
     /*
     ***************************************************
     * @方法 设置监听事件
@@ -153,6 +154,7 @@ public class HuxiuFragment extends Fragment {
                 Intent itemIntent=new Intent();
                 itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
+                itemIntent.putExtra("type",1);
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }
