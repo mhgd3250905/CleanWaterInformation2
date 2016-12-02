@@ -27,6 +27,7 @@ import Adapter.MyPagerAdapter;
 import MyFragment.BaijiaFragment;
 import MyFragment.HuxiuFragment;
 import MyFragment.ITHomeFragment;
+import MyFragment.V2EXFragment;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -81,13 +82,14 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        String[] TITLE={"虎嗅","IT之家","百度百家"};
+        String[] TITLE={"虎嗅","IT之家","百度百家","V2EX热点"};
         tlHome.setupWithViewPager(vpHome);
 
         List<Fragment> fragmentList = new ArrayList<Fragment>();
         fragmentList.add(new HuxiuFragment());
         fragmentList.add(new ITHomeFragment());
         fragmentList.add(new BaijiaFragment());
+        fragmentList.add(new V2EXFragment());
 
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
 
