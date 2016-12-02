@@ -12,6 +12,7 @@ import android.webkit.WebView;
 
 import java.util.List;
 
+import DataBean.BaijiaContentBean;
 import DataBean.HuXiuContentBean;
 import DataBean.ITHomeContentBean;
 import MyUtils.LogUtils;
@@ -97,6 +98,29 @@ public class WebActivity extends AppCompatActivity {
                             }
                         });
                 break;
+            case 2:
+                LogUtils.Log("获取type：   "+type);
+                BmobQuery<BaijiaContentBean> baijiaQuery = new BmobQuery<BaijiaContentBean>();
+                baijiaQuery.addWhereEqualTo("key",key)
+                        .findObjects(new FindListener<BaijiaContentBean>() {
+                            @Override
+                            public void done(List<BaijiaContentBean> object, BmobException e) {
+                                if (e == null&&object.size()==1) {
+                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+                                    content = object.get(0).getContent();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+                                        }
+                                    });
+                                } else {
+                                    LogUtils.Log("查询内容失败");
+                                }
+                            }
+                        });
+                break;
+
         }
 
         LogUtils.Log("返回的内容"+content);
