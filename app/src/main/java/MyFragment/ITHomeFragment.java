@@ -14,6 +14,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +27,6 @@ import Adapter.RecyclerViewBaseAdapter;
 import DataBean.ITHomeBean;
 import DataBean.ITHomeGson;
 import DataBean.JsonITHome;
-import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
@@ -45,11 +49,11 @@ public class ITHomeFragment extends Fragment{
     @Bind(R.id.rv_huxiu)
     PullLoadMoreRecyclerView rvHuxiu;
 
-    private int page=0;
+    private String ITHOME_URL="http://wap.ithome.com/";
+
+    private int page=1;
     private List<ITHomeBean> mDataList=new ArrayList<ITHomeBean>();
     private ITHomeAdapter adapter;
-
-
 
     @Nullable
     @Override
@@ -94,6 +98,43 @@ public class ITHomeFragment extends Fragment{
     * @返回值
     */
     private void initData() {
+         /* @描述 获取Observable对象 */
+        /* @描述 初始化Retrofit */
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .client(new OkHttpClient())
+//                .addConverterFactory(ScalarsConverterFactory.create())
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
+//                .baseUrl(ITHOME_URL)
+//                .build();
+//
+//        WebService service = retrofit.create(WebService.class);
+//
+//        service.getItHomeList(page+"","wapcategorypage")
+//                .observeOn(Schedulers.io())
+//                .subscribeOn(Schedulers.io())
+//                .map(new Func1<String, List<ITHomeBean>>() {
+//                    @Override
+//                    public List<ITHomeBean> call(String s) {
+//                        return getItHomeList(s);
+//                    }
+//                })
+//                .subscribe(new Subscriber<List<ITHomeBean>>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        LogUtils.Log("completed");
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        LogUtils.Log("Error  "+e.toString());
+//                    }
+//
+//                    @Override
+//                    public void onNext(List<ITHomeBean> itHomeList) {
+//                        adapter.append(itHomeList);
+//                    }
+//                });
 
         BmobQuery<JsonITHome> query = new BmobQuery<JsonITHome>();
         //查询playerName叫“比目”的数据
@@ -109,7 +150,7 @@ public class ITHomeFragment extends Fragment{
                     ITHomeGson itHomeGson = new Gson().fromJson(object.get(0).getJsonData(), ITHomeGson.class);
                     List<ITHomeBean> data = itHomeGson.getData();
 
-                    LogUtils.Log("查询成功：共"+data.size()+"条数据。");
+                    //LogUtils.Log("查询成功：共"+data.size()+"条数据。");
 
                     for (int i = 0; i < data.size(); i++) {
                         mDataList.add(data.get(i));
@@ -124,6 +165,25 @@ public class ITHomeFragment extends Fragment{
                 }
             }
         });
+    }
+
+    /*
+    ***************************************************
+    * @方法 将map中获取的josnString转换为List<ITHomeBean>
+    * @参数 String
+    * @返回值 List<ITHomeBean>
+    */
+    private List<ITHomeBean> getItHomeList(String s) {
+        List<ITHomeBean> needList=new ArrayList<ITHomeBean>();
+        Document doc = Jsoup.parse(s);
+        Elements li_eles = doc.select("li");
+        for (Element ele:li_eles){
+            ITHomeBean itHome=new ITHomeBean();
+            itHome.setTitle(ele.select("span.title").text());
+            itHome.setContentURL(ITHOME_URL+ele.select("a").attr("href"));
+            needList.add(itHome);
+        }
+        return needList;
     }
 
 

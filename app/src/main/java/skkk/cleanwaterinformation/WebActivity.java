@@ -1,14 +1,17 @@
 package skkk.cleanwaterinformation;
 
 import android.content.Intent;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.util.List;
 
@@ -50,7 +53,6 @@ public class WebActivity extends AppCompatActivity {
     private void initData() {
         getContentHtml(url,type);
     }
-
 
     public void getContentHtml(String key,int type){
         switch (type){
@@ -120,10 +122,13 @@ public class WebActivity extends AppCompatActivity {
                             }
                         });
                 break;
+            case 3:
+                LogUtils.Log("获取type：   "+type);
+                mWvWeb.loadUrl(url);
+                break;
 
         }
 
-        LogUtils.Log("返回的内容"+content);
     }
 
     private void initUI() {
@@ -141,26 +146,26 @@ public class WebActivity extends AppCompatActivity {
             }
         });
 
-//        mWvWeb.setWebViewClient(new WebViewClient(){
-//            @Override
-//            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//                view.loadUrl(url);
-//                return true;
-//            }
-//        });
+        mWvWeb.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
         mWvWeb.setWebChromeClient(new WebChromeClient(){
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 //get the newProgress and refresh progress bar
             }
         });
-//        mWvWeb.setWebViewClient(new WebViewClient() {
-//            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//                //handler.cancel(); // Android默认的处理方式
-//                handler.proceed();  // 接受所有网站的证书
-//                //handleMessage(Message msg); // 进行其他处理
-//            }
-//        });
+        mWvWeb.setWebViewClient(new WebViewClient() {
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                //handler.cancel(); // Android默认的处理方式
+                handler.proceed();  // 接受所有网站的证书
+                //handleMessage(Message msg); // 进行其他处理
+            }
+        });
 
         setSettings(mWvWeb.getSettings());
 

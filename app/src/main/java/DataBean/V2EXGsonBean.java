@@ -113,12 +113,12 @@ public class V2EXGsonBean {
 
     public static class MemberBean {
         /**
-         * id : 36118
-         * username : coolair
-         * tagline :
-         * avatar_mini : //cdn.v2ex.co/avatar/c4fe/52ac/36118_mini.png?m=1363654760
-         * avatar_normal : //cdn.v2ex.co/avatar/c4fe/52ac/36118_normal.png?m=1363654760
-         * avatar_large : //cdn.v2ex.co/avatar/c4fe/52ac/36118_large.png?m=1363654760
+         * id : 196683
+         * username : ansheng
+         * tagline : Great time!
+         * avatar_mini : //cdn.v2ex.co/avatar/b0d5/74ca/196683_mini.png?m=1476856136
+         * avatar_normal : //cdn.v2ex.co/avatar/b0d5/74ca/196683_normal.png?m=1476856136
+         * avatar_large : //cdn.v2ex.co/avatar/b0d5/74ca/196683_large.png?m=1476856136
          */
 
         private int id;
@@ -179,15 +179,15 @@ public class V2EXGsonBean {
 
     public static class NodeBean {
         /**
-         * id : 39
-         * name : android
-         * title : Android
-         * title_alternative : Android
-         * url : http://www.v2ex.com/go/android
-         * topics : 3388
-         * avatar_mini : //cdn.v2ex.co/navatar/d67d/8ab4/39_mini.png?m=1480555777
-         * avatar_normal : //cdn.v2ex.co/navatar/d67d/8ab4/39_normal.png?m=1480555777
-         * avatar_large : //cdn.v2ex.co/navatar/d67d/8ab4/39_large.png?m=1480555777
+         * id : 300
+         * name : programmer
+         * title : 程序员
+         * title_alternative : Programmer
+         * url : http://www.v2ex.com/go/programmer
+         * topics : 13933
+         * avatar_mini : //cdn.v2ex.co/navatar/94f6/d7e0/300_mini.png?m=1480728812
+         * avatar_normal : //cdn.v2ex.co/navatar/94f6/d7e0/300_normal.png?m=1480728812
+         * avatar_large : //cdn.v2ex.co/navatar/94f6/d7e0/300_large.png?m=1480728812
          */
 
         private int id;

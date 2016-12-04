@@ -22,7 +22,6 @@ import Adapter.RecyclerViewBaseAdapter;
 import DataBean.HuXiuBean;
 import DataBean.HuxiuGson;
 import DataBean.JsonHuxiu;
-import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
@@ -108,7 +107,7 @@ public class HuxiuFragment extends Fragment {
                     HuxiuGson huxiuGson = new Gson().fromJson(object.get(0).getJsonData(), HuxiuGson.class);
                     List<HuXiuBean> data = huxiuGson.getData();
 
-                    LogUtils.Log("查询成功：共"+data.size()+"条数据。");
+                    //LogUtils.Log("查询成功：共"+data.size()+"条数据。");
 
                     for (int i = 0; i < data.size(); i++) {
                         mDataList.add(data.get(i));

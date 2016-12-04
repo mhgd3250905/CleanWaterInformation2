@@ -18,15 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Adapter.BaijiaAdapter;
-import Adapter.HuxiuAdapter;
 import Adapter.RecyclerViewBaseAdapter;
 import DataBean.BaijiaBean;
 import DataBean.BaijiaGson;
-import DataBean.HuXiuBean;
-import DataBean.HuxiuGson;
 import DataBean.JsonBaijia;
-import DataBean.JsonHuxiu;
-import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import cn.bmob.v3.Bmob;
@@ -112,7 +107,7 @@ public class BaijiaFragment extends Fragment {
                     BaijiaGson baijiaGson = new Gson().fromJson(object.get(0).getJsonData(), BaijiaGson.class);
                     List<BaijiaBean> data = baijiaGson.getData();
 
-                    LogUtils.Log("查询成功：共"+data.size()+"条数据。");
+                    //LogUtils.Log("查询成功：共"+data.size()+"条数据。");
 
                     for (int i = 0; i < data.size(); i++) {
                         mDataList.add(data.get(i));

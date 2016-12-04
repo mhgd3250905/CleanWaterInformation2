@@ -1,6 +1,7 @@
 package Adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.List;
 
 import DataBean.BaijiaBean;
-import DataBean.HuXiuBean;
 import ViewHolder.HuxiuViewHolder;
 import ViewHolder.RecyclerViewHolderBase;
 import skkk.cleanwaterinformation.R;
@@ -40,11 +40,14 @@ public class BaijiaAdapter extends RecyclerViewBaseAdapter<BaijiaBean>{
         //向下转型为子类
         HuxiuViewHolder holder= (HuxiuViewHolder) viewHolder;
         holder.tvItem.setText(mItemDataList.get(i).getTitle());
-        Glide.with(context)
-                .load(mItemDataList.get(i).getImgSrc())
-
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.ivItem);
+        if (TextUtils.isEmpty(mItemDataList.get(i).getImgSrc())) {
+            holder.ivItem.setVisibility(View.GONE);
+        }else {
+            Glide.with(context)
+                    .load(mItemDataList.get(i).getImgSrc())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.ivItem);
+        }
     }
 
     @Override

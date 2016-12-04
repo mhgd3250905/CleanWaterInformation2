@@ -12,19 +12,23 @@ import android.widget.Toast;
 
 import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import Adapter.RecyclerViewBaseAdapter;
 import Adapter.V2exAdapter;
 import DataBean.V2EXBean;
-import DataBean.V2EXGsonBean;
+import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -45,11 +49,12 @@ public class V2EXFragment extends Fragment {
     @Bind(R.id.rv_huxiu)
     PullLoadMoreRecyclerView rvHuxiu;
 
-    private String V2EX_URL = "https://www.v2ex.com/api/topics/hot.json";
+    private String V2EX_URL = "https://www.v2ex.com/";
 
-    private int page = 0;
     private List<V2EXBean> mDataList = new ArrayList<V2EXBean>();
     private V2exAdapter adapter;
+    private WebService service;
+    private Retrofit retrofit;
 
 
     @Nullable
@@ -60,7 +65,6 @@ public class V2EXFragment extends Fragment {
         initUI();
         initData();
         initEvent();
-
         return v2exView;
     }
 
@@ -73,7 +77,7 @@ public class V2EXFragment extends Fragment {
     */
     private void initUI() {
         /* @描述 设置Adapter */
-        adapter = new V2exAdapter(getContext(), mDataList);
+        adapter = new V2exAdapter(getContext(),mDataList);
         /* @描述 布局 */
         rvHuxiu.setLinearLayout();
         /* @描述 设置间距 */
@@ -93,50 +97,69 @@ public class V2EXFragment extends Fragment {
     * @返回值
     */
     private void initData() {
-        Retrofit retrofit = new Retrofit.Builder()
+        //新的配置
+        retrofit = new Retrofit.Builder()
                 .client(new OkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
                 .baseUrl(V2EX_URL)
                 .build();
 
-        WebService service = retrofit.create(WebService.class);
+        service = retrofit.create(WebService.class);
 
+        getRxDate();
+    }
+
+    public void getRxDate(){
         service.getV2EXData()
-                .observeOn(Schedulers.io())
-                .map(new Func1<V2EXGsonBean, V2EXBean>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<String,List<V2EXBean>>() {
                     @Override
-                    public V2EXBean call(V2EXGsonBean v2EXGsonBean) {
-                        return mapV2EXBean(v2EXGsonBean);
+                    public List<V2EXBean> call(String s) {
+                        return mapV2EXBean(s);
                     }
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<V2EXBean>() {
+                .subscribe(new Subscriber<List<V2EXBean>>() {
                     @Override
                     public void onCompleted() {
-                        adapter.append(mDataList);
-                        if (rvHuxiu.isLoadMore()) {
+                        LogUtils.Log("completed");
+                        if (rvHuxiu.isRefresh()) {
                             rvHuxiu.setPullLoadMoreCompleted();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
-
+                        LogUtils.Log("Error  "+e.toString());
                     }
 
                     @Override
-                    public void onNext(V2EXBean v2EXBean) {
-                        mDataList.add(v2EXBean);
+                    public void onNext(List<V2EXBean> v2EXBeanList) {
+                        LogUtils.Log(v2EXBeanList.size()+"");
+                        adapter.replace(v2EXBeanList);
+
                     }
                 });
     }
 
-    public V2EXBean mapV2EXBean(V2EXGsonBean v2EXGsonBean){
-        V2EXBean needBean=new V2EXBean();
-        needBean.setTitle(v2EXGsonBean.getTitle());
-        needBean.setContentURL(v2EXGsonBean.getUrl());
-        return needBean;
+    public List<V2EXBean> mapV2EXBean(String jsonData){
+        List<V2EXBean> needBeanList=new ArrayList<V2EXBean>();
+        JSONArray arr = null;
+        try {
+            arr = new JSONArray(jsonData);
+            for (int i = 0; i < arr.length(); i++) {
+                V2EXBean v2EXBean =new V2EXBean();
+                JSONObject temp = (JSONObject) arr.get(i);
+                v2EXBean.setTitle(temp.getString("title"));
+                v2EXBean.setContentURL(temp.getString("url"));
+                needBeanList.add(v2EXBean);
+            }
+            return needBeanList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return needBeanList;
+        }
     }
 
 
@@ -147,16 +170,16 @@ public class V2EXFragment extends Fragment {
     * @返回值
     */
     private void initEvent() {
+        rvHuxiu.setPushRefreshEnable(false);
         rvHuxiu.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
             @Override
             public void onRefresh() {
-                initData();
+                getRxDate();
             }
 
             @Override
             public void onLoadMore() {
                 Toast.makeText(getContext(), "上拉加载更多", Toast.LENGTH_SHORT).show();
-                page++;
                 initData();
             }
         });
@@ -167,7 +190,7 @@ public class V2EXFragment extends Fragment {
                 Intent itemIntent = new Intent();
                 itemIntent.putExtra("url", mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title", mDataList.get(position).getTitle());
-                itemIntent.putExtra("type", 0);
+                itemIntent.putExtra("type", 3);
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }
