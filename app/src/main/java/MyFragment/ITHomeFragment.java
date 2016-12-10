@@ -49,9 +49,7 @@ public class ITHomeFragment extends Fragment{
     @Bind(R.id.rv_huxiu)
     PullLoadMoreRecyclerView rvHuxiu;
 
-    private String ITHOME_URL="http://wap.ithome.com/";
-
-    private int page=1;
+    private int page=0;
     private List<ITHomeBean> mDataList=new ArrayList<ITHomeBean>();
     private ITHomeAdapter adapter;
 
@@ -98,44 +96,6 @@ public class ITHomeFragment extends Fragment{
     * @返回值
     */
     private void initData() {
-         /* @描述 获取Observable对象 */
-        /* @描述 初始化Retrofit */
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .client(new OkHttpClient())
-//                .addConverterFactory(ScalarsConverterFactory.create())
-//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
-//                .baseUrl(ITHOME_URL)
-//                .build();
-//
-//        WebService service = retrofit.create(WebService.class);
-//
-//        service.getItHomeList(page+"","wapcategorypage")
-//                .observeOn(Schedulers.io())
-//                .subscribeOn(Schedulers.io())
-//                .map(new Func1<String, List<ITHomeBean>>() {
-//                    @Override
-//                    public List<ITHomeBean> call(String s) {
-//                        return getItHomeList(s);
-//                    }
-//                })
-//                .subscribe(new Subscriber<List<ITHomeBean>>() {
-//                    @Override
-//                    public void onCompleted() {
-//                        LogUtils.Log("completed");
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        LogUtils.Log("Error  "+e.toString());
-//                    }
-//
-//                    @Override
-//                    public void onNext(List<ITHomeBean> itHomeList) {
-//                        adapter.append(itHomeList);
-//                    }
-//                });
-
         BmobQuery<JsonITHome> query = new BmobQuery<JsonITHome>();
         //查询playerName叫“比目”的数据
         query.setSkip(page*1);
@@ -157,34 +117,25 @@ public class ITHomeFragment extends Fragment{
                     }
 
                     adapter.append(data);
-                    if (rvHuxiu.isLoadMore()) {
+                    if (rvHuxiu.isRefresh() || rvHuxiu.isLoadMore()) {
                         rvHuxiu.setPullLoadMoreCompleted();
                     }
-                }else{
+
+
+                } else {
+
+
+                    if (rvHuxiu.isRefresh() || rvHuxiu.isLoadMore()) {
+                        rvHuxiu.setPullLoadMoreCompleted();
+                        Toast.makeText(getContext(), "获取失败，请检查网络...", Toast.LENGTH_SHORT).show();
+                    }
                     Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
                 }
             }
         });
     }
 
-    /*
-    ***************************************************
-    * @方法 将map中获取的josnString转换为List<ITHomeBean>
-    * @参数 String
-    * @返回值 List<ITHomeBean>
-    */
-    private List<ITHomeBean> getItHomeList(String s) {
-        List<ITHomeBean> needList=new ArrayList<ITHomeBean>();
-        Document doc = Jsoup.parse(s);
-        Elements li_eles = doc.select("li");
-        for (Element ele:li_eles){
-            ITHomeBean itHome=new ITHomeBean();
-            itHome.setTitle(ele.select("span.title").text());
-            itHome.setContentURL(ITHOME_URL+ele.select("a").attr("href"));
-            needList.add(itHome);
-        }
-        return needList;
-    }
+
 
 
     /*

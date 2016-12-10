@@ -16,6 +16,7 @@ import android.webkit.WebViewClient;
 import java.util.List;
 
 import DataBean.BaijiaContentBean;
+import DataBean.FenghuangContentBean;
 import DataBean.HuXiuContentBean;
 import DataBean.ITHomeContentBean;
 import MyUtils.LogUtils;
@@ -122,10 +123,35 @@ public class WebActivity extends AppCompatActivity {
                             }
                         });
                 break;
+
             case 3:
+                LogUtils.Log("获取type：   "+type);
+                BmobQuery<FenghuangContentBean> fenghuangQuery = new BmobQuery<FenghuangContentBean>();
+                fenghuangQuery.addWhereEqualTo("key",key)
+                        .findObjects(new FindListener<FenghuangContentBean>() {
+                            @Override
+                            public void done(List<FenghuangContentBean> object, BmobException e) {
+                                if (e == null&&object.size()==1) {
+                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+                                    content = object.get(0).getContent();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+                                        }
+                                    });
+                                } else {
+                                    LogUtils.Log("查询内容失败");
+                                }
+                            }
+                        });
+                break;
+
+            case 4:
                 LogUtils.Log("获取type：   "+type);
                 mWvWeb.loadUrl(url);
                 break;
+
 
         }
 

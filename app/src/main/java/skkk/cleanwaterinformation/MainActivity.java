@@ -25,8 +25,10 @@ import java.util.TimerTask;
 
 import Adapter.MyPagerAdapter;
 import MyFragment.BaijiaFragment;
+import MyFragment.FenghuangFragment;
 import MyFragment.HuxiuFragment;
 import MyFragment.ITHomeFragment;
+import MyFragment.PandaFragment;
 import MyFragment.V2EXFragment;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -82,14 +84,17 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        String[] TITLE={"虎嗅","IT之家","百度百家","V2EX热点"};
+        String[] TITLE={"百度百家","虎嗅","IT之家","凤凰科技","V2EX热点","熊猫TV_LOL"};
         tlHome.setupWithViewPager(vpHome);
 
         List<Fragment> fragmentList = new ArrayList<Fragment>();
+
+        fragmentList.add(new BaijiaFragment());
         fragmentList.add(new HuxiuFragment());
         fragmentList.add(new ITHomeFragment());
-        fragmentList.add(new BaijiaFragment());
+        fragmentList.add(new FenghuangFragment());
         fragmentList.add(new V2EXFragment());
+        fragmentList.add(new PandaFragment());
 
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
 

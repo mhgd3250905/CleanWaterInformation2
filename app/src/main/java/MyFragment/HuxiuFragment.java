@@ -114,10 +114,20 @@ public class HuxiuFragment extends Fragment {
                     }
 
                     adapter.append(data);
-                    if (rvHuxiu.isLoadMore()) {
+
+                    if (rvHuxiu.isRefresh() || rvHuxiu.isLoadMore()) {
                         rvHuxiu.setPullLoadMoreCompleted();
                     }
-                }else{
+
+
+                } else {
+
+
+                    if (rvHuxiu.isRefresh() || rvHuxiu.isLoadMore()) {
+                        rvHuxiu.setPullLoadMoreCompleted();
+                        Toast.makeText(getContext(), "获取失败，请检查网络...", Toast.LENGTH_SHORT).show();
+                    }
+
                     Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
                 }
             }
