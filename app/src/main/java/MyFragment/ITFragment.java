@@ -141,7 +141,6 @@ public class ITFragment extends Fragment {
                 Intent itemIntent=new Intent();
                 itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
-                itemIntent.putExtra("type",0);
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }
@@ -154,7 +153,7 @@ public class ITFragment extends Fragment {
     }
 
     public void insertHXData(WebService service) {
-        service.getHXGsonData("ItBean","20")
+        service.getHXGsonData("ITBean","20")
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<HXGsonBean, List<HuXiuBean>>() {
                     @Override

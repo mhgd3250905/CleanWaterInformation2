@@ -141,7 +141,6 @@ public class FHFragment extends Fragment {
                 Intent itemIntent=new Intent();
                 itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
-                itemIntent.putExtra("type",0);
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
             }

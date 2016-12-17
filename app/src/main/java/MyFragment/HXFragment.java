@@ -139,8 +139,7 @@ public class HXFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 Intent itemIntent=new Intent();
-                itemIntent.putExtra("id",mDataList.get(position).getObjectId());
-                itemIntent.putExtra("className","HXContentBean");
+                itemIntent.putExtra("url",mDataList.get(position).getContentURL());
                 itemIntent.putExtra("title",mDataList.get(position).getTitle());
                 itemIntent.setClass(getContext(), WebActivity.class);
                 startActivity(itemIntent);
