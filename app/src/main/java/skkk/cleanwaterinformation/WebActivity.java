@@ -13,18 +13,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import java.util.List;
-
-import DataBean.BaijiaContentBean;
-import DataBean.FenghuangContentBean;
-import DataBean.HuXiuContentBean;
-import DataBean.ITHomeContentBean;
-import MyUtils.LogUtils;
+import DataBean.HXContentBean;
+import MyFragment.WebService;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 public class WebActivity extends AppCompatActivity {
 
@@ -34,126 +32,159 @@ public class WebActivity extends AppCompatActivity {
     @Bind(R.id.wv_web)
     WebView mWvWeb;
 
-    private String url=null;
+    private String id=null;
+    private String className=null;
     private String title=null;
-    private String content=null;
     private int type;
+    private Retrofit retrofit;
+    private WebService service;
+
+    private static final String BASE_HX_URL="https://api.bmob.cn/";
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        url=intent.getStringExtra("url");
+        id=intent.getStringExtra("id");
+        className=intent.getStringExtra("className");
         title=intent.getStringExtra("title");
-        type=intent.getIntExtra("type",0);
         initUI();
         initData();
     }
 
     private void initData() {
-        getContentHtml(url,type);
+        getContentHtml(id,className);
     }
 
-    public void getContentHtml(String key,int type){
-        switch (type){
-            case 0:
-                LogUtils.Log("获取type：   "+type);
-                BmobQuery<HuXiuContentBean> huxiuQuery = new BmobQuery<HuXiuContentBean>();
-                huxiuQuery.addWhereEqualTo("key",key)
-                        .findObjects(new FindListener<HuXiuContentBean>() {
-                            @Override
-                            public void done(List<HuXiuContentBean> object, BmobException e) {
-                                if (e == null&&object.size()==1) {
-                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
-                                    content = object.get(0).getContent();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
-                                        }
-                                    });
-                                } else {
-                                    LogUtils.Log("查询内容失败");
-                                }
-                            }
-                        });
-                break;
-            case 1:
-                LogUtils.Log("获取type：   "+type);
-                BmobQuery<ITHomeContentBean> itHomeQuery = new BmobQuery<ITHomeContentBean>();
-                itHomeQuery.addWhereEqualTo("key",key)
-                        .findObjects(new FindListener<ITHomeContentBean>() {
-                            @Override
-                            public void done(List<ITHomeContentBean> object, BmobException e) {
-                                if (e == null&&object.size()==1) {
-                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
-                                    content = object.get(0).getContent();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
-                                        }
-                                    });
-                                } else {
-                                    LogUtils.Log("查询内容失败");
-                                }
-                            }
-                        });
-                break;
-            case 2:
-                LogUtils.Log("获取type：   "+type);
-                BmobQuery<BaijiaContentBean> baijiaQuery = new BmobQuery<BaijiaContentBean>();
-                baijiaQuery.addWhereEqualTo("key",key)
-                        .findObjects(new FindListener<BaijiaContentBean>() {
-                            @Override
-                            public void done(List<BaijiaContentBean> object, BmobException e) {
-                                if (e == null&&object.size()==1) {
-                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
-                                    content = object.get(0).getContent();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
-                                        }
-                                    });
-                                } else {
-                                    LogUtils.Log("查询内容失败");
-                                }
-                            }
-                        });
-                break;
+    public void getContentHtml(String id,String className){
+        //新的配置
+        retrofit = new Retrofit.Builder()
+                .client(new OkHttpClient())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())//新的配置
+                .baseUrl(BASE_HX_URL)
+                .build();
 
-            case 3:
-                LogUtils.Log("获取type：   "+type);
-                BmobQuery<FenghuangContentBean> fenghuangQuery = new BmobQuery<FenghuangContentBean>();
-                fenghuangQuery.addWhereEqualTo("key",key)
-                        .findObjects(new FindListener<FenghuangContentBean>() {
-                            @Override
-                            public void done(List<FenghuangContentBean> object, BmobException e) {
-                                if (e == null&&object.size()==1) {
-                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
-                                    content = object.get(0).getContent();
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
-                                        }
-                                    });
-                                } else {
-                                    LogUtils.Log("查询内容失败");
-                                }
-                            }
-                        });
-                break;
+        service = retrofit.create(WebService.class);
 
-            case 4:
-                LogUtils.Log("获取type：   "+type);
-                mWvWeb.loadUrl(url);
-                break;
+        service.getContentData(className,id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<HXContentBean>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
 
-        }
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(HXContentBean hxContentBean) {
+                        mWvWeb.loadDataWithBaseURL(null,hxContentBean.getContentHtml(), "text/html", "utf-8", null);
+                    }
+                });
+//        switch (type){
+//            case 0:
+//                LogUtils.Log("获取type：   "+type);
+//                BmobQuery<HuXiuContentBean> huxiuQuery = new BmobQuery<HuXiuContentBean>();
+//                huxiuQuery.addWhereEqualTo("key",key)
+//                        .findObjects(new FindListener<HuXiuContentBean>() {
+//                            @Override
+//                            public void done(List<HuXiuContentBean> object, BmobException e) {
+//                                if (e == null&&object.size()==1) {
+//                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+//                                    content = object.get(0).getContent();
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+//                                        }
+//                                    });
+//                                } else {
+//                                    LogUtils.Log("查询内容失败");
+//                                }
+//                            }
+//                        });
+//                break;
+//            case 1:
+//                LogUtils.Log("获取type：   "+type);
+//                BmobQuery<ITHomeContentBean> itHomeQuery = new BmobQuery<ITHomeContentBean>();
+//                itHomeQuery.addWhereEqualTo("key",key)
+//                        .findObjects(new FindListener<ITHomeContentBean>() {
+//                            @Override
+//                            public void done(List<ITHomeContentBean> object, BmobException e) {
+//                                if (e == null&&object.size()==1) {
+//                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+//                                    content = object.get(0).getContent();
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+//                                        }
+//                                    });
+//                                } else {
+//                                    LogUtils.Log("查询内容失败");
+//                                }
+//                            }
+//                        });
+//                break;
+//            case 2:
+//                LogUtils.Log("获取type：   "+type);
+//                BmobQuery<BaijiaContentBean> baijiaQuery = new BmobQuery<BaijiaContentBean>();
+//                baijiaQuery.addWhereEqualTo("key",key)
+//                        .findObjects(new FindListener<BaijiaContentBean>() {
+//                            @Override
+//                            public void done(List<BaijiaContentBean> object, BmobException e) {
+//                                if (e == null&&object.size()==1) {
+//                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+//                                    content = object.get(0).getContent();
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+//                                        }
+//                                    });
+//                                } else {
+//                                    LogUtils.Log("查询内容失败");
+//                                }
+//                            }
+//                        });
+//                break;
+//
+//            case 3:
+//                LogUtils.Log("获取type：   "+type);
+//                BmobQuery<FenghuangContentBean> fenghuangQuery = new BmobQuery<FenghuangContentBean>();
+//                fenghuangQuery.addWhereEqualTo("key",key)
+//                        .findObjects(new FindListener<FenghuangContentBean>() {
+//                            @Override
+//                            public void done(List<FenghuangContentBean> object, BmobException e) {
+//                                if (e == null&&object.size()==1) {
+//                                    //LogUtils.Log("查询到的内容"+object.get(0).getContent());
+//                                    content = object.get(0).getContent();
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mWvWeb.loadDataWithBaseURL(null,content, "text/html", "utf-8", null);
+//                                        }
+//                                    });
+//                                } else {
+//                                    LogUtils.Log("查询内容失败");
+//                                }
+//                            }
+//                        });
+//                break;
+//
+//            case 4:
+//                LogUtils.Log("获取type：   "+type);
+//                mWvWeb.loadUrl(url);
+//                break;
+//
+//
+//        }
 
     }
 

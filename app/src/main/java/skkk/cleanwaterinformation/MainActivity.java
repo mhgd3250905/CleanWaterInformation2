@@ -24,12 +24,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import Adapter.MyPagerAdapter;
-import MyFragment.BaijiaFragment;
-import MyFragment.FenghuangFragment;
+import MyFragment.FHFragment;
+import MyFragment.HXFragment;
 import MyFragment.HuxiuFragment;
-import MyFragment.ITHomeFragment;
-import MyFragment.PandaFragment;
-import MyFragment.V2EXFragment;
+import MyFragment.ITFragment;
+import MyFragment.PPFragment;
+import MyFragment.WXFragment;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -84,17 +84,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
-        String[] TITLE={"百度百家","虎嗅","IT之家","凤凰科技","V2EX热点","熊猫TV_LOL"};
+        String[] TITLE={"微信科技","凤凰科技","IT之家","虎嗅网","泡泡网"};
         tlHome.setupWithViewPager(vpHome);
 
         List<Fragment> fragmentList = new ArrayList<Fragment>();
 
-        fragmentList.add(new BaijiaFragment());
-        fragmentList.add(new HuxiuFragment());
-        fragmentList.add(new ITHomeFragment());
-        fragmentList.add(new FenghuangFragment());
-        fragmentList.add(new V2EXFragment());
-        fragmentList.add(new PandaFragment());
+//        fragmentList.add(new BaijiaFragment());
+//        fragmentList.add(new HuxiuFragment());
+//        fragmentList.add(new ITHomeFragment());
+//        fragmentList.add(new FenghuangFragment());
+//        fragmentList.add(new V2EXFragment());
+//        fragmentList.add(new PandaFragment());
+        fragmentList.add(new WXFragment());
+        fragmentList.add(new FHFragment());
+        fragmentList.add(new ITFragment());
+        fragmentList.add(new HXFragment());
+        fragmentList.add(new PPFragment());
 
         MyPagerAdapter adapter = new MyPagerAdapter(getSupportFragmentManager(), fragmentList, TITLE);
 
