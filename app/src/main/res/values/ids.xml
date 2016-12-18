@@ -9,4 +9,5 @@
     <item name="wv_web" type="id">网页webView你懂得</item>
     <item name="tl_home" type="id">home界面的TabLayout</item>
     <item name="vp_home" type="id">home界面的ViewPager</item>
+    <item name="rv_refresh" type="id">刷新</item>
 </resources>

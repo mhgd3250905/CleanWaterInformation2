@@ -2,7 +2,6 @@ package MyFragment;
 
 import DataBean.HXContentBean;
 import DataBean.HXGsonBean;
-import DataBean.PandaGsonBean;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
@@ -19,22 +18,6 @@ import rx.Observable;
 * 时    间：2016/12/2$ 21:48$.
 */
 public interface WebService {
-    /* @描述 V2EX */
-    @Headers({
-            "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-    })
-    @GET("api/topics/hot.json")
-    Observable<String> getV2EXData();
-
-
-    /*熊猫TV爬虫*/
-    @Headers({
-            "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36"
-    })
-    @GET("ajax_get_live_list_by_cate") //pagenum //__plat  lol/1/10/h5
-    Observable<PandaGsonBean> getPandaList(@Query("cate")String cate, @Query("pageno")String pageno,
-                                           @Query("pagenum")String pagenum,@Query("__plat") String __plat);
-
 
 //    https://api.bmob.cn/1/classes/TableName
     @Headers({
@@ -43,7 +26,8 @@ public interface WebService {
             "Content-Type: application/json"
     })
     @GET("1/classes/{tableName}")
-    Observable<HXGsonBean> getHXGsonData(@Path("tableName")String tableName,@Query("limit")String limit);
+    Observable<HXGsonBean> getHXGsonData(@Path("tableName")String tableName,
+                                         @Query("limit")String limit,@Query("skip") String skip);
 
 
 //    https://api.bmob.cn/1/classes/GameScore/e1kXT22L
