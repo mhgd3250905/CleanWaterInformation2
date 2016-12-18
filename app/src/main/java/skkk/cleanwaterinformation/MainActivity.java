@@ -25,7 +25,6 @@ import java.util.TimerTask;
 
 import Adapter.MyPagerAdapter;
 import MyFragment.BaseFragment;
-import MyFragment.HuxiuFragment;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -121,17 +120,6 @@ public class MainActivity extends AppCompatActivity
 
 
 
-    }
-
-    /*
-    ***************************************************
-    * @方法 加入初始Fragment
-    * @参数
-    * @返回值
-    */
-    private void initFragment() {
-        HuxiuFragment huxiuFragment = new HuxiuFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_main, huxiuFragment).commit();
     }
 
 

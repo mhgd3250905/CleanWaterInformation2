@@ -44,12 +44,12 @@ import skkk.cleanwaterinformation.WebActivity;
 * 作    者：ksheng
 * 时    间：2016/11/21$ 21:16$.
 */
+@SuppressLint("ValidFragment")
 public class BaseFragment extends Fragment {
     @Bind(R.id.rv_huxiu)
     PullLoadMoreRecyclerView rvHuxiu;
 
 
-    private int page=0;
     private List<HuXiuBean> mDataList=new ArrayList<HuXiuBean>();
     private HuxiuAdapter adapter;
     private Retrofit retrofit;
@@ -136,7 +136,6 @@ public class BaseFragment extends Fragment {
             @Override
             public void onLoadMore() {
                 Toast.makeText(getContext(), "上拉加载更多", Toast.LENGTH_SHORT).show();
-                page++;
                 initData();
             }
         });
