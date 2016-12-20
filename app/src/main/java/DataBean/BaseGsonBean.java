@@ -7,11 +7,11 @@ import java.util.List;
  */
 /*
 * 
-* 描    述：HXGsonBean
+* 描    述：BaseGsonBean
 * 作    者：ksheng
 * 时    间：2016/12/16$ 21:38$.
 */
-public class HXGsonBean {
+public class BaseGsonBean {
 
     private List<ResultsBean> results;
 

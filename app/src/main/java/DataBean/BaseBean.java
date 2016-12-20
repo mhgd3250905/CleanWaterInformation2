@@ -3,18 +3,19 @@ package DataBean;
 import cn.bmob.v3.BmobObject;
 
 /**
- * Created by admin on 2016/11/17.
+ * Created by admin on 2016/11/21.
  */
 /*
 * 
 * 描    述：
 * 作    者：ksheng
-* 时    间：2016/11/17$ 23:33$.
+* 时    间：2016/11/21$ 21:29$.
 */
-public class ITHomeBean extends BmobObject {
+public class BaseBean extends BmobObject {
     public String title;
     public String contentURL;
     public String imgSrc;
+
 
     public String getContentURL() {
         return contentURL;

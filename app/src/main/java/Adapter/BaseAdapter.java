@@ -11,7 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
-import DataBean.HuXiuBean;
+import DataBean.BaseBean;
 import ViewHolder.HuxiuViewHolder;
 import ViewHolder.RecyclerViewHolderBase;
 import skkk.cleanwaterinformation.R;
@@ -25,18 +25,18 @@ import skkk.cleanwaterinformation.R;
 * 作    者：ksheng
 * 时    间：2016/11/21$ 21:24$.
 */
-public class HuxiuAdapter extends RecyclerViewBaseAdapter<HuXiuBean>{
+public class BaseAdapter extends RecyclerViewBaseAdapter<BaseBean>{
     private Context context;
     private LayoutInflater inflater;
 
-    public HuxiuAdapter(Context context,List<HuXiuBean> mItemDataList) {
+    public BaseAdapter(Context context, List<BaseBean> mItemDataList) {
         super(mItemDataList);
         this.context = context;
         inflater= LayoutInflater.from(context);
     }
 
     @Override
-    public void showData(RecyclerViewHolderBase viewHolder, int i, List<HuXiuBean> mItemDataList) {
+    public void showData(RecyclerViewHolderBase viewHolder, int i, List<BaseBean> mItemDataList) {
         //向下转型为子类
         HuxiuViewHolder holder= (HuxiuViewHolder) viewHolder;
         holder.tvItem.setText(mItemDataList.get(i).getTitle());

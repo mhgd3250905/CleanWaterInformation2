@@ -15,10 +15,10 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import Adapter.HuxiuAdapter;
+import Adapter.BaseAdapter;
 import Adapter.RecyclerViewBaseAdapter;
-import DataBean.HXGsonBean;
-import DataBean.HuXiuBean;
+import DataBean.BaseGsonBean;
+import DataBean.BaseBean;
 import MyUtils.LogUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -54,8 +54,8 @@ public class BaseFragment extends Fragment implements BGARefreshLayout.BGARefres
 
 
 
-    private List<HuXiuBean> mDataList=new ArrayList<HuXiuBean>();
-    private HuxiuAdapter adapter;
+    private List<BaseBean> mDataList=new ArrayList<BaseBean>();
+    private BaseAdapter adapter;
     private Retrofit retrofit;
 
     private static final String BASE_URL="https://api.bmob.cn/";
@@ -122,7 +122,7 @@ public class BaseFragment extends Fragment implements BGARefreshLayout.BGARefres
     */
     private void initUI() {
         /* @描述 设置Adapter */
-        adapter = new HuxiuAdapter(getContext(),mDataList);
+        adapter = new BaseAdapter(getContext(),mDataList);
         /* @描述 布局 */
 //        rvData.setLinearLayout();
         LinearLayoutManager llManager=new LinearLayoutManager(getContext());
@@ -188,29 +188,29 @@ public class BaseFragment extends Fragment implements BGARefreshLayout.BGARefres
     }
 
     public void insertHXData(WebService service) {
-        service.getHXGsonData(tableName,limit+"",page*skip+"")
+        service.getHXGsonData(tableName,limit+"",page*skip+"","-createdAt")
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<HXGsonBean, List<HuXiuBean>>() {
+                .map(new Func1<BaseGsonBean, List<BaseBean>>() {
                     @Override
-                    public List<HuXiuBean> call(HXGsonBean hxGsonBean) {
+                    public List<BaseBean> call(BaseGsonBean baseGsonBean) {
 
-                        List<HXGsonBean.ResultsBean> results = hxGsonBean.getResults();
-                        List<HuXiuBean> responses=new ArrayList<HuXiuBean>();
-                        for (HXGsonBean.ResultsBean resultsBean:results){
+                        List<BaseGsonBean.ResultsBean> results = baseGsonBean.getResults();
+                        List<BaseBean> responses=new ArrayList<BaseBean>();
+                        for (BaseGsonBean.ResultsBean resultsBean:results){
 
                             LogUtils.Log(resultsBean.getTitle());
 
-                            HuXiuBean huXiuBean=new HuXiuBean();
-                            huXiuBean.setTitle(resultsBean.getTitle());
-                            huXiuBean.setImgSrc(resultsBean.getImgUrl());
-                            huXiuBean.setContentURL(resultsBean.getContentUrl());
-                            responses.add(huXiuBean);
+                            BaseBean baseBean =new BaseBean();
+                            baseBean.setTitle(resultsBean.getTitle());
+                            baseBean.setImgSrc(resultsBean.getImgUrl());
+                            baseBean.setContentURL(resultsBean.getContentUrl());
+                            responses.add(baseBean);
                         }
                         return responses;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<HuXiuBean>>() {
+                .subscribe(new Subscriber<List<BaseBean>>() {
                     @Override
                     public void onCompleted() {
                         LogUtils.Log("completed");
@@ -227,7 +227,7 @@ public class BaseFragment extends Fragment implements BGARefreshLayout.BGARefres
                     }
 
                     @Override
-                    public void onNext(List<HuXiuBean> huXiuList) {
+                    public void onNext(List<BaseBean> huXiuList) {
                         LogUtils.Log(huXiuList.size()+"");
                         adapter.append(huXiuList);
                     }
